@@ -48,6 +48,24 @@ Route::get('/manhinhthemoi', function(){
     // $userIdArr = DB::table("users")->pluck("name","id");
     // dd($userIdArr);
 
+    //Đếm số lượng record
+    // $cout = DB::table("users")->where("id", 1)->count();
+    //Group by và các hàm tính toán
+    // $max = DB::table("migrations")->max("batch");
+    // $sum = DB::table("migrations")->sum("batch");
+    // $avg = DB::table("migrations")->avg("batch");
+    // echo $max; exit;
+
+    // kiểm tra tồn tại
+    // $exists = DB::table("migrations")->where("batch", 4)->exists();
+    // echo $exists? "ton tai": "khong ton tai"; exit;
+
+    // query tĩnh
+    // $r = DB::select("select * from users where id =?", [1]);
+
+    // $d = "20/12/2000";
+    // $d = implode("-"(array_reverse(explode("/", $d)));
+    // echo $d;
 
 
 });//->middleware('ghilog')->middleware('authencation')->name('ad');
@@ -70,6 +88,100 @@ Route::post("/edit/{id}", function(Request $request ,$id){
         return redirect()->route("viewuser");
     };
 })->name("capnhat");
+// Tạo bảng đơn hàng gồm (id, tên hàng, số lượng, đơn giá, thành tiền, ngày bán);
+// Viết chức năng in danh sách theo ngày
+// Viết chức năng in ra số tiền bán trong ngày, số đơn hàng bán trong ngày
+
+Route::get("/viewProducts", function () {
+    $products = DB::table("products")->get();
+    return view("viewProducts", compact(["products"]));
+})->name("viewproducts");
+
+//in danh sách theo ngày
+Route::get("/viewProductsNgay", function (Request $request) {
+    $search = $request->search;
+    $productsNgay = DB::table("products")->where('ngayban', $search)->get();
+    if($productsNgay){
+        return view("viewProductsNgay", compact(["productsNgay"]));
+    }
+    
+    
+})->name("viewproductsngay");
+
+//in ra số tiền bán trong ngày
+Route::get("/viewMoneyNgay", function(Request $request){
+    $search = $request->search;
+    $moneyNgay = DB::table("products")->where('ngayban', $search)->sum("thanhtien");
+    return view("viewMoneyNgay", compact(["moneyNgay"]));
+})->name("viewmoneyngay");
+
+//số đơn hàng bán trong ngày
+Route::get("/viewDonNgay", function(Request $request){
+    $search = $request->search;
+    $donNgay = DB::table("products")->where("ngayban", $search)->count();
+    return view("viewDonNgay", compact(['donNgay']));
+})->name("viewdonngay");
+// Viết chức năng quản lý thư viện gồm 
+// Danh sách sách
+// Danh sách thuê sách
+// Chi tiết thuê sách
+// Lập báo cáo như sau:
+// ---Báo cáo theo ngày gồm các cột dữ liệu
+// -----Ngày thuê, số lượng phiếu, số lượng sách
+// ---Báo cáo theo tháng
+// -----Tháng thuê, số lượng phiếu, số lượng sách
+// ---Báo cáo sách
+// -----Tháng thuê, tên sách, số lượng được thuê
+// -----Sắp xếp theo số lượng được thuê giảm dần
+
+// Danh sách sách
+Route::get("/viewSach", function(){
+    $sachs = DB::table("saches")->get();
+    return view("viewSach", compact(['sachs']));
+})->name("viewsach");
+
+// Danh sách thuê sách
+Route::get("/viewThueSach", function(){
+    $thueSachs = DB::table("thuesaches")->get();
+    return view("viewThueSach", compact(['thueSachs']));
+})->name("thuesach");
+
+// Chi tiết thuê sách
+Route::get("/viewChiTietThueSach/{id}", function($id){
+    $ctThueSach = DB::table("thuesaches")->where("id", $id)->get();
+    $sach = DB::table("saches")->pluck("tensach", "id");
+    return view("viewChiTietThueSach", compact(['ctThueSach', 'sach']));
+})->name("ctthuesach");
+
+// ---Báo cáo theo ngày
+Route::get("/viewThueSachNgay", function(Request $request){
+    $search = $request->search;
+    $thueNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->get();
+    $phieuNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->count();
+    $sachNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->sum("soluong_thue");
+    return view("viewSachNgay", compact(['thueNgay', 'phieuNgay', 'sachNgay']));
+})->name("viewsachngay");
+
+// ---Báo cáo theo thang
+Route::get("/viewThueSachThang", function(Request $request){
+    $search = $request->search;
+    $thueThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->get();
+    $phieuThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->count();
+    $sachThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->sum("soluong_thue");
+    return view("viewSachThang", compact(['thueThang', 'phieuThang', 'sachThang']));
+})->name("viewsachthang");
+
+// ---Báo cáo sách
+Route::get("/viewBaoCaoSach", function(Request $request){
+    $search = $request->search;
+    $sachThang = DB::table('saches')
+                    ->leftJoin('thuesaches', 'saches.id', '=', 'thuesaches.idsach_thue')
+                    ->select('thuesaches.nguoi_thue', 'thuesaches.soluong_thue')
+                    ->whereMonth('ngay_thue', $search)
+                    ->orderByDesc('thuesaches.soluong_thue')
+                    ->get();
+    return view("viewBaoCaoSach", compact(['sachThang']));         
+})->name("viewbaocaosach");
 
 Route::get("/addUsers", function(){
     $phongbanId = DB::table("phongban")->pluck("name", "id");
