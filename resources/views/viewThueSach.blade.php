@@ -25,6 +25,8 @@
       </td>
       <td>
         <a href="{{url('/viewChiTietThueSach/'. $re->id)}}">Chi tiet</a>
+        <a href="{{ route('editThue',[$re->id]) }}">Edit</a>
+        <a href=" {{ route('del111',[$re->id]) }}">Delete</a>
       </td>
     </tr>
     @endforeach

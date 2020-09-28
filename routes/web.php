@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/chucnang/them', 'Chucnang@them');
 Route::get('/manhinhthemoi', function(){
     //echo "Man hinh them mới";
     //lấy toàn bộ dữ liệu table
@@ -122,8 +124,8 @@ Route::get("/viewDonNgay", function(Request $request){
     return view("viewDonNgay", compact(['donNgay']));
 })->name("viewdonngay");
 // Viết chức năng quản lý thư viện gồm 
-// Danh sách sách
-// Danh sách thuê sách
+// Danh sách/thêm mới/ sửa sách
+// Danh sách/thêm mới/ sửa thuê sách
 // Chi tiết thuê sách
 // Lập báo cáo như sau:
 // ---Báo cáo theo ngày gồm các cột dữ liệu
@@ -134,54 +136,44 @@ Route::get("/viewDonNgay", function(Request $request){
 // -----Tháng thuê, tên sách, số lượng được thuê
 // -----Sắp xếp theo số lượng được thuê giảm dần
 
+//Thêm mới sách
+Route::get('/create', 'SachController@create')->name('create');
+Route::post('/store', 'SachController@store')->name('store');
+
+//Cập nhật sách
+Route::get('/edit/{id}', 'SachController@edit')->name('editSach1');
+Route::post('/editSach/{id}', 'SachController@update')->name('editSach2');
+
+//Xoa sach
+Route::get('/del11/{id}', 'SachController@destroy')->name('del11');
+
 // Danh sách sách
-Route::get("/viewSach", function(){
-    $sachs = DB::table("saches")->get();
-    return view("viewSach", compact(['sachs']));
-})->name("viewsach");
+Route::get("/viewSach", 'SachController@index')->name("viewsach");
+
+//Thêm mới người thuê
+Route::get('/addThue', 'ThuesachController@create')->name('addThue');
+Route::post('/addThueSach', 'ThuesachController@store')->name('addThueSach');
+
+//edit thue sach
+Route::get('/editThue/{id}', 'ThuesachController@edit')->name('editThue');
+Route::post('/editThueSach/{id}', 'ThuesachController@update')->name('editThueSach');
 
 // Danh sách thuê sách
-Route::get("/viewThueSach", function(){
-    $thueSachs = DB::table("thuesaches")->get();
-    return view("viewThueSach", compact(['thueSachs']));
-})->name("thuesach");
+Route::get("/viewThueSach", 'ThuesachController@index')->name("thuesach");
 
+//Xoa thue sach
+Route::get('/del111/{id}', 'thueSachController@destroy')->name('del111');
 // Chi tiết thuê sách
-Route::get("/viewChiTietThueSach/{id}", function($id){
-    $ctThueSach = DB::table("thuesaches")->where("id", $id)->get();
-    $sach = DB::table("saches")->pluck("tensach", "id");
-    return view("viewChiTietThueSach", compact(['ctThueSach', 'sach']));
-})->name("ctthuesach");
+Route::get("/viewChiTietThueSach/{id}", 'ThuesachController@viewChiTietThueSach')->name("ctthuesach");
 
 // ---Báo cáo theo ngày
-Route::get("/viewThueSachNgay", function(Request $request){
-    $search = $request->search;
-    $thueNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->get();
-    $phieuNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->count();
-    $sachNgay = DB::table("thuesaches")->whereDay('ngay_thue', $search)->sum("soluong_thue");
-    return view("viewSachNgay", compact(['thueNgay', 'phieuNgay', 'sachNgay']));
-})->name("viewsachngay");
+Route::get("/viewThueSachNgay", 'ThuesachController@viewThueSachNgay')->name("viewsachngay");
 
 // ---Báo cáo theo thang
-Route::get("/viewThueSachThang", function(Request $request){
-    $search = $request->search;
-    $thueThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->get();
-    $phieuThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->count();
-    $sachThang = DB::table("thuesaches")->whereMonth('ngay_thue', $search)->sum("soluong_thue");
-    return view("viewSachThang", compact(['thueThang', 'phieuThang', 'sachThang']));
-})->name("viewsachthang");
+Route::get("/viewThueSachThang", 'ThuesachController@viewThueSachThang')->name("viewsachthang");
 
 // ---Báo cáo sách
-Route::get("/viewBaoCaoSach", function(Request $request){
-    $search = $request->search;
-    $sachThang = DB::table('saches')
-                    ->leftJoin('thuesaches', 'saches.id', '=', 'thuesaches.idsach_thue')
-                    ->select('thuesaches.nguoi_thue', 'thuesaches.soluong_thue')
-                    ->whereMonth('ngay_thue', $search)
-                    ->orderByDesc('thuesaches.soluong_thue')
-                    ->get();
-    return view("viewBaoCaoSach", compact(['sachThang']));         
-})->name("viewbaocaosach");
+Route::get("/viewBaoCaoSach", 'SachController@viewBaoCaoSach')->name("viewbaocaosach");
 
 Route::get("/addUsers", function(){
     $phongbanId = DB::table("phongban")->pluck("name", "id");

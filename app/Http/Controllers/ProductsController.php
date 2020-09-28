@@ -82,4 +82,18 @@ class ProductsController extends Controller
     {
         //
     }
+
+    function them (Request $request){
+        // them moi
+        $pr = new products();
+        $pr ->tenhang=$request->tenhang;
+        $pr->save();
+
+        // update
+        $pr = products::find(1);
+        $pr->tenhang=$request->tenhang;
+        $pr->update();
+    }
+
+
 }
