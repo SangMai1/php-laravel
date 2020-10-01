@@ -175,6 +175,56 @@ Route::get("/viewThueSachThang", 'ThuesachController@viewThueSachThang')->name("
 // ---Báo cáo sách
 Route::get("/viewBaoCaoSach", 'SachController@viewBaoCaoSach')->name("viewbaocaosach");
 
+// Quản lý vào ra cho công ty
+/**
+ * Tạo các module bằng migrate:
+ * nguoidung, phongban, mayquetthe, vaora
+ * 
+ * Viết các chức năng sau
+ *  Quản lý nhân viên
+ *  Quản lý phòng ban
+ *  Quản lý máy quẹt thẻ
+ *  Thêm mới vào ra
+ *  Hiển thị danh sách vào ra cho 1 nhân viên theo ngày
+ *  Hiển thị danh sách vào ra theo tháng (các ngày trong tháng)
+ *      Cho 1 nhân viên theo mẫu
+ *      Ngày -----Giờ vào -----Giờ ra ----số lần vào ra */ 
+
+// add phong ban
+Route::get('/addPhongban', 'ModelPhongban1Controller@create')->name("addphongban");
+Route::post('/themPhongban', 'ModelPhongban1Controller@store')->name("themphongban");
+
+// View phong ban
+Route::get("/viewPhongban", 'ModelPhongban1Controller@index')->name("viewphongban"); 
+
+//add nhan vien
+Route::get('/addNhanvien', 'ModelNguoidungController@create')->name('addnhanvien');
+Route::post('/themNhanvien', 'ModelNguoidungController@store')->name('themnhanvien');
+
+//edit nhan vien
+Route::get('/editNhanvien/{id}', 'ModelNguoidungController@edit')->name('editnhanvien');
+Route::post('/updateNhanvien/{id}', 'ModelNguoidungController@update')->name('updatenhanvien');
+
+//View nhan vien
+Route::get("/viewNhanvien", 'ModelNguoidungController@index')->name("viewnhanvien");
+
+//View may quet
+Route::get("/viewMayquet", 'ModelMayquetthesController@index')->name("viewmayquet");
+
+// add vao
+Route::get('/addVao', 'ModelVaoraController@create')->name('vao');
+Route::post('/themVao', 'ModelVaoraController@store')->name('themvao');
+
+
+// view vao
+Route::get('/viewVao', 'ModelVaoraController@index')->name("viewvao");
+
+//fin nhan vien theo ngay
+Route::get('/findNhanvien', 'ModelVaoraController@findNhanvienVao')->name("findvao");
+
+//thong ke thang
+Route::get('/thongKeThang', 'ModelVaoraController@thongke')->name('thongke');
+
 Route::get("/addUsers", function(){
     $phongbanId = DB::table("phongban")->pluck("name", "id");
     return view("addUsers", ['phongbanId' => $phongbanId]);
