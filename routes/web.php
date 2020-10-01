@@ -225,6 +225,88 @@ Route::get('/findNhanvien', 'ModelVaoraController@findNhanvienVao')->name("findv
 //thong ke thang
 Route::get('/thongKeThang', 'ModelVaoraController@thongke')->name('thongke');
 
+/*
+    Viết chương trình quản lý tài sản gồm
+    -Quản lý người dùng (tên)
+    -Quản lý nhà cung cấp (tên)
+    -Quản lý chủng loại (tên)
+    -Quản lý tài sản (tên)
+    -Di chuyển tài sản và ghi nhật ký di chuyển
+    -Xem danh sách di chuyển tài sản
+*/
+//add nguoi dung
+Route::get('/addNguoidung', 'ModelTaisanNguoidungController@create')->name('addnd');
+Route::post('/themNguoidung', 'ModelTaisanNguoidungController@store')->name('themnguoidung');
+
+//edit nguoidung
+Route::get('/editNguoidung/{id}', 'ModelTaisanNguoidungController@edit')->name('editnguoidung');
+Route::post('/updateNguoidung/{id}', 'ModelTaisanNguoidungController@update')->name('updatenguoidung');
+
+//Xoa nguoi dung
+Route::get('/del1111/{id}', 'ModelTaisanNguoidungController@destroy')->name('del1111');
+
+//View nguoi dung
+Route::get("/viewNguoidung", 'ModelTaisanNguoidungController@index')->name("viewnguoidung");
+
+// add nha cung cap
+Route::get('/addNhacungcap', 'ModelTaisanNhacungcapController@create')->name('addncc');
+Route::post('/themNhacungcap', 'ModelTaisanNhacungcapController@store')->name('themnhacungcap');
+
+//edit nha cung cap
+Route::get('/editNhacungcap/{id}', 'ModelTaisanNhacungcapController@edit')->name('editnhacungcap');
+Route::post('/updateNhacungcap/{id}', 'ModelTaisanNhacungcapController@update')->name('updatenhacungcap');
+
+//Xoa nha cung cap
+Route::get('/del11111/{id}', 'ModelTaisanNhacungcapController@destroy')->name('del11111');
+
+//View nha cung cap
+Route::get("/viewNhacungcap", 'ModelTaisanNhacungcapController@index')->name("viewnhacungcap");
+
+// add chung loai
+Route::get('/addChungloai', 'ModelTaisanChungloaiController@create')->name('addchungloai');
+Route::post('/themChungloai', 'ModelTaisanChungloaiController@store')->name('themchungloai');
+
+//edit chung loai
+Route::get('/editChungloai/{id}', 'ModelTaisanChungloaiController@edit')->name('editchungloai');
+Route::post('/updateChungloai/{id}', 'ModelTaisanChungloaiController@update')->name('updatechungloai');
+
+//Xoa chung loai
+Route::get('/del111111/{id}', 'ModelTaisanChungloaiController@destroy')->name('del111111');
+
+//View chung loai
+Route::get("/viewChungloai", 'ModelTaisanChungloaiController@index')->name("viewchungloai");
+
+// add tai san
+Route::get('/addTaisan', 'ModelTaisanTaisanController@create')->name('addtaisan');
+Route::post('/themTaisan', 'ModelTaisanTaisanController@store')->name('themtaisan');
+
+//edit tai san
+Route::get('/editTaisan/{id}', 'ModelTaisanTaisanController@edit')->name('edittaisan');
+Route::post('/updateTaisan/{id}', 'ModelTaisanTaisanController@update')->name('updatetaisan');
+
+//Xoa tai san
+Route::get('/del1111111/{id}', 'ModelTaisanTaisanController@destroy')->name('del1111111');
+
+//View tai san
+Route::get("/viewTaisan", 'ModelTaisanTaisanController@index')->name("viewtaisan");
+
+//add di chuyen tai san
+Route::get('/addDichuyen', 'ModelTaisanNhatkiController@create')->name('adddichuyen');
+Route::post('/themDichuyen', 'ModelTaisanNhatkiController@store')->name('themdichuyen');
+
+//edit di chuyen tai san
+Route::get('/editDichuyen/{id}', 'ModelTaisanNhatkiController@edit')->name('editdichuyen');
+Route::post('/updateDichuyen/{id}', 'ModelTaisanNhatkiController@update')->name('updatedichuyen');
+
+//Xoa di chuyen tai san
+Route::get('/del11111111/{id}', 'ModelTaisanNhatkiController@destroy')->name('del11111111');
+
+//View di chuyen tai san
+Route::get("/viewDichuyen", 'ModelTaisanNhatkiController@index')->name("viewdichuyen");
+
+// ---Báo cáo 
+Route::get("/viewBaocao", 'ModelTaisanNhatkiController@viewBaoCao')->name("viewbaocao");
+
 Route::get("/addUsers", function(){
     $phongbanId = DB::table("phongban")->pluck("name", "id");
     return view("addUsers", ['phongbanId' => $phongbanId]);
