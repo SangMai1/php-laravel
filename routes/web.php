@@ -307,6 +307,74 @@ Route::get("/viewDichuyen", 'ModelTaisanNhatkiController@index')->name("viewdich
 // ---Báo cáo 
 Route::get("/viewBaocao", 'ModelTaisanNhatkiController@viewBaoCao')->name("viewbaocao");
 
+/*
+Bán sách điện tử
+Quản lý cấp học (Tiểu học, Trung học cơ sở, Trung học phổ thông)
+Quản lý lớp học (lớp 1..12)
+Quản lý đầu sách (tên sách, giá tiền mua online, lớp nào dùng)
+Quản lý license (mã license, đầu sách, trạng thái (đã dùng hay chưa), ngày dùng)
+Lập báo cáo số lượng sách được kích hoạt trong ngày theo mẫu: Cấp học, lớp họp, ngày, số lượng
+*/
+
+//Thêm mới cap hoc
+Route::get('/createCaphoc', 'ModelCaphocsController@create')->name('create');
+Route::post('/storeCaphoc', 'ModelCaphocsController@store')->name('store');
+
+//Cập nhật 
+Route::get('/edit/{id}', 'ModelCaphocsController@edit')->name('editCaphoc1');
+Route::post('/editCaphoc/{id}', 'ModelCaphocsController@update')->name('editCaphoc2');
+
+//Xoa
+Route::get('/delCaphoc/{id}', 'ModelCaphocsController@destroy')->name('delCaphoc');
+
+// Danh sách
+Route::get("/viewCaphoc", 'ModelCaphocsController@index')->name('viewcaphoc');
+
+//Thêm mới lop hoc
+Route::get('/createLophoc', 'ModelLophocsController@create')->name('create');
+Route::post('/storeLophoc', 'ModelLophocsController@store')->name('themlop');
+
+//Cập nhật 
+Route::get('/edit/{id}', 'ModelLophocsController@edit')->name('editlophoc1');
+Route::post('/editLophoc/{id}', 'ModelLophocsController@update')->name('editlophoc2');
+
+//Xoa sach
+Route::get('/delLophoc/{id}', 'ModelLophocsController@destroy')->name('dellophoc');
+
+// Danh sách 
+Route::get("/viewLophoc", 'ModelLophocsController@index')->name('viewlophoc');
+
+//Thêm mới sach
+Route::get('/createDausach', 'ModelDausachsController@create')->name('create');
+Route::post('/storeDausach', 'ModelDausachsController@store')->name('themdausach');
+
+//Cập nhật 
+Route::get('/edit/{id}', 'ModelDausachsController@edit')->name('editdausach1');
+Route::post('/editDausach/{id}', 'ModelDausachsController@update')->name('editdausach2');
+
+//Xoa sach
+Route::get('/delDausach/{id}', 'ModelDausachsController@destroy')->name('deldausach');
+
+// Danh sách 
+Route::get("/viewDausach", 'ModelDausachsController@index')->name('viewdausach');
+
+//Thêm mới license
+Route::get('/createLicense', 'ModelLicensessController@create')->name('create');
+Route::post('/storeLicense', 'ModelLicensessController@store')->name('themlicense');
+
+//Cập nhật 
+Route::get('/edit/{id}', 'ModelLicensessController@edit')->name('editlicense1');
+Route::post('/editLicense/{id}', 'ModelLicensessController@update')->name('editlicense2');
+
+//Xoa sach
+Route::get('/delLicense/{id}', 'ModelLicensessController@destroy')->name('dellicense');
+
+// Danh sách 
+Route::get("/viewLicense", 'ModelLicensessController@index')->name('viewlicense');
+
+// Danh sách thong ke
+Route::get("/viewThongke", 'ModelLicensessController@viewSachNgay')->name('viewthongke');
+
 Route::get("/addUsers", function(){
     $phongbanId = DB::table("phongban")->pluck("name", "id");
     return view("addUsers", ['phongbanId' => $phongbanId]);
